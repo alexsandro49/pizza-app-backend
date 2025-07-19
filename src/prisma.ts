@@ -1,10 +1,11 @@
 import { PrismaClient } from "@prisma/client";
+// import crypto from 'node:crypto';
 
 const prisma = new PrismaClient();
 
 prisma.$use(async (params, next) => {
-  const crypto = await import('crypto');
-
+  const crypto = await require('crypto')
+  
   if (params.action === 'create' && params.model === 'User') {
     const idHash = crypto.createHash('sha256').update(`${Date.now()}-${Math.random()}`)
         .digest('hex');
@@ -18,6 +19,19 @@ prisma.$use(async (params, next) => {
       .digest('hex');
 
     params.args.where.password = passwordHash;
+  }
+
+  return next(params);
+});
+
+prisma.$use(async (params, next) => {
+  const crypto = await require('crypto')
+  
+  if (params.action === 'create' && params.model === 'Product') {
+    const idHash = crypto.createHash('sha256').update(`${Date.now()}-${Math.random()}`)
+        .digest('hex');
+
+    params.args.data.id = idHash;
   }
 
   return next(params);
