@@ -3,7 +3,7 @@ import prisma from "../prisma"
 
 const router = express.Router()
 
-async function register(req: Request, res: Response) {
+async function create(req: Request, res: Response) {
     const {name, price, type, description, imageName } = req.body
     const product = await prisma.product.create({
         data: {
@@ -18,7 +18,14 @@ async function register(req: Request, res: Response) {
     res.send(product)
 }
 
+async function listAll(req: Request, res: Response) {
+    const products = await prisma.product.findMany()
 
-router.post("/product/register", register)
+    res.send(products)
+}
+
+
+router.post("/product", create)
+router.get("/product", listAll)
 
 export {router as productRoutes}
