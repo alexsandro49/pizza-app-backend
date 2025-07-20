@@ -38,9 +38,20 @@ async function update(req: Request, res: Response) {
     res.send(product)
 }
 
+async function deleteOne(req: Request, res: Response) {
+    const { id } = req.params;
+
+    const product = await prisma.product.delete({
+        where: { id },
+    })
+
+    res.send(product)
+}
+
 
 router.post("/product", create)
 router.get("/product", listAll)
 router.put("/product/:id", update)
+router.delete("/product/:id", deleteOne)
 
 export {router as productRoutes}
